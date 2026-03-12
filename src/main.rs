@@ -674,7 +674,7 @@ fn cmd_exec(args: Vec<String>, options: CliOptions) {
     let routes_to_selector = !matches!(
         args.first().map(String::as_str),
         Some("clone") | Some("worktree") | Some("cd") | Some(".") if args.len() > 1
-    );
+    ) && !args.first().is_some_and(|arg| is_url(arg));
     if !stdin_is_tty() && routes_to_selector && !is_test_mode {
         eprint!("{}", global_help_text());
         std::process::exit(2);
