@@ -794,7 +794,13 @@ impl TrySelector {
                     }
                 } else if self.cursor_pos < self.tries.len() {
                     let entry = &self.tries[self.cursor_pos];
-                    KeyResult::Exit(SelectionResult::Cd(entry.data.path.clone()))
+                    let final_path = if entry.data.is_symlink {
+                        fs::canonicalize(&entry.data.path)
+                            .unwrap_or_else(|_| entry.data.path.clone())
+                    } else {
+                        entry.data.path.clone()
+                    };
+                    KeyResult::Exit(SelectionResult::Cd(final_path))
                 } else if !self.input_field.text().is_empty() {
                     match self.create_from_buffer() {
                         Ok(path) => KeyResult::Exit(SelectionResult::Mkdir(path)),
