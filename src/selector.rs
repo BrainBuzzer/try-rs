@@ -591,7 +591,7 @@ impl TrySelector {
 
             let header_line = self.screen.header.add_line();
             header_line.left.emoji("🧪");
-            header_line.left.write_bold(" try", "");
+            header_line.left.write_bold(" Try Directory Selection", "");
             header_line.left.write_dim(" — ephemeral workspace manager");
             if let Some(when) = newest {
                 header_line.right.write_dim(&when);
