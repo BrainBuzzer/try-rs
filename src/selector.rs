@@ -784,7 +784,7 @@ impl TrySelector {
                                 // User confirmed with YES - collect paths
                                 let paths: Vec<PathBuf> =
                                     self.marked_for_delete.iter().cloned().collect();
-                                return KeyResult::Exit(SelectionResult::Delete(paths));
+                                KeyResult::Exit(SelectionResult::Delete(paths))
                             } else {
                                 // User cancelled or didn't type YES - stay in delete mode
                                 KeyResult::Continue

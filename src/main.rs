@@ -297,7 +297,7 @@ fn script_ascend(path: &Path, projects_dir: &Path) -> String {
     let basename = path
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
-        .unwrap_or_else(|| "".to_string());
+        .unwrap_or_default();
     let dest = projects_dir.to_path_buf();
     let symlink_path = path.to_path_buf();
 

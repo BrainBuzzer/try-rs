@@ -39,7 +39,7 @@ pub const DENSITY_WEIGHT: f64 = 1.0;
 
 pub const SQRT_TABLE: [f64; 65] = [
     1.0,
-    1.414213562373095,
+    std::f64::consts::SQRT_2,
     1.732050807568877,
     2.0,
     2.23606797749979,
