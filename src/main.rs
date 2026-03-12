@@ -293,11 +293,72 @@ fn script_delete(paths: &[String]) -> Vec<String> {
 }
 
 #[allow(dead_code)]
-fn script_ascend(src: &str, dest: &str) -> Vec<String> {
-    vec![
-        format!("mv {} {}", q(src), q(dest)),
-        format!("ln -s {} {}", q(dest), q(src)),
-    ]
+fn script_ascend(path: &Path, projects_dir: &Path) -> String {
+    let tries_dir = path.parent().unwrap_or_else(|| Path::new("."));
+    let basename = path
+        .file_name()
+        .map(|n| n.to_string_lossy().to_string())
+        .unwrap_or_else(|| "".to_string());
+    let dest = projects_dir.join(&basename);
+    let symlink_path = tries_dir.join(&basename);
+
+    let git_file = path.join(".git");
+    let is_worktree = fs::metadata(&git_file)
+        .map(|m| m.is_file())
+        .unwrap_or(false)
+        && fs::read_to_string(&git_file)
+            .map(|s| s.trim_start().starts_with("gitdir:"))
+            .unwrap_or(false);
+
+    let mut cmds = Vec::new();
+    if is_worktree {
+        let repo_root = fs::read_to_string(&git_file)
+            .ok()
+            .and_then(|content| {
+                content
+                    .trim_start()
+                    .strip_prefix("gitdir:")
+                    .map(str::trim)
+                    .map(str::to_string)
+            })
+            .map(PathBuf::from)
+            .map(|p| if p.is_absolute() { p } else { path.join(p) })
+            .and_then(|p| {
+                p.parent()
+                    .and_then(|x| x.parent())
+                    .and_then(|x| x.parent())
+                    .map(Path::to_path_buf)
+            })
+            .unwrap_or_else(|| tries_dir.to_path_buf());
+        cmds.push(format!("cd {}", q(&repo_root.to_string_lossy())));
+        cmds.push(format!(
+            "git worktree move {} {}",
+            q(&path.to_string_lossy()),
+            q(&dest.to_string_lossy())
+        ));
+    } else {
+        cmds.push(format!("cd {}", q(&tries_dir.to_string_lossy())));
+        cmds.push(format!(
+            "mv {} {}",
+            q(&basename),
+            q(&dest.to_string_lossy())
+        ));
+    }
+    cmds.push(format!(
+        "ln -s {} {}",
+        q(&dest.to_string_lossy()),
+        q(&symlink_path.to_string_lossy())
+    ));
+    cmds.push(format!(
+        "echo {}",
+        q(&format!(
+            "Graduated: {} → {}",
+            basename,
+            dest.to_string_lossy()
+        ))
+    ));
+    cmds.push(script_cd(&dest.to_string_lossy()));
+    cmds.join(" && \\\n  ")
 }
 
 #[allow(dead_code)]
@@ -757,8 +818,8 @@ fn run_selector(options: CliOptions) {
             emit_script(&[cmd]);
         }
         selector::SelectionResult::Ascend(src, dest) => {
-            let cmds = script_ascend(&src.to_string_lossy(), &dest.to_string_lossy());
-            emit_script(&cmds);
+            let cmd = script_ascend(&src, &dest);
+            emit_script(&[cmd]);
         }
         selector::SelectionResult::Cancelled => {
             if !options.and_keys.is_empty() {
@@ -1195,7 +1256,7 @@ mod tests {
     fn script_cd_command() {
         assert_eq!(
             script_cd("/tmp/path"),
-            "touch '/tmp/path' && \\\n+  cd '/tmp/path'"
+            "touch '/tmp/path' && \\\n  cd '/tmp/path'"
         );
     }
 
@@ -1235,11 +1296,8 @@ mod tests {
     #[test]
     fn script_ascend_commands() {
         assert_eq!(
-            script_ascend("/tries/src", "/projects/dst"),
-            vec![
-                "mv '/tries/src' '/projects/dst'".to_string(),
-                "ln -s '/projects/dst' '/tries/src'".to_string()
-            ]
+            script_ascend(Path::new("/tries/src"), Path::new("/projects")),
+            "cd '/tries' && \\\n  mv 'src' '/projects/src' && \\\n+  ln -s '/projects/src' '/tries/src' && \\\n+  echo 'Graduated: src → /projects/src' && \\\n+  touch '/projects/src' && \\\n+  cd '/projects/src'"
         );
     }
 
