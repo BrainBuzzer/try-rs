@@ -962,6 +962,7 @@ impl TrySelector {
             let (width, height) = tui::Terminal::size();
             let mut dialog_screen = tui::Screen::new(width, height, 2, 2);
             dialog_screen.clear();
+            let separator = "─".repeat(width.saturating_sub(1) as usize);
 
             let count = self.marked_for_delete.len();
             let header_line = dialog_screen.header.add_line();
@@ -979,11 +980,7 @@ impl TrySelector {
                 &tui::palette::accent(),
             );
 
-            dialog_screen
-                .header
-                .add_line()
-                .left
-                .write_dim(&tui::ansi::sgr(&["2m"]));
+            dialog_screen.header.add_line().left.write_dim(&separator);
 
             for path in &self.marked_for_delete {
                 let line = dialog_screen.body.add_line();
@@ -1001,8 +998,12 @@ impl TrySelector {
             prompt_line.left.write_dim("Type YES to confirm: ");
             confirmation_field.render(&mut prompt_line.left, "", width as usize);
 
-            let footer_line = dialog_screen.footer.add_line();
-            footer_line.left.write_dim("Enter: Confirm  Esc: Cancel");
+            dialog_screen.footer.add_line().left.write_dim(&separator);
+            dialog_screen
+                .footer
+                .add_line()
+                .left
+                .write_dim("Enter: Confirm  Esc: Cancel");
 
             dialog_screen.flush_stderr()?;
 
@@ -1089,6 +1090,7 @@ impl TrySelector {
             let (width, height) = tui::Terminal::size();
             let mut dialog_screen = tui::Screen::new(width, height, 2, 2);
             dialog_screen.clear();
+            let separator = "─".repeat(width.saturating_sub(1) as usize);
 
             let header_line = dialog_screen.header.add_line();
             header_line.left.emoji("✏️");
@@ -1096,11 +1098,7 @@ impl TrySelector {
                 .left
                 .write_bold("  Rename directory", &tui::palette::accent());
 
-            dialog_screen
-                .header
-                .add_line()
-                .left
-                .write_dim(&tui::ansi::sgr(&["2m"]));
+            dialog_screen.header.add_line().left.write_dim(&separator);
 
             let body_line = dialog_screen.body.add_line();
             body_line.left.emoji("📁");
@@ -1118,8 +1116,12 @@ impl TrySelector {
                 dialog_screen.body.add_line().left.write_bold(err, "");
             }
 
-            let footer_line = dialog_screen.footer.add_line();
-            footer_line.left.write_dim("Enter: Confirm  Esc: Cancel");
+            dialog_screen.footer.add_line().left.write_dim(&separator);
+            dialog_screen
+                .footer
+                .add_line()
+                .left
+                .write_dim("Enter: Confirm  Esc: Cancel");
 
             dialog_screen.flush_stderr()?;
 
