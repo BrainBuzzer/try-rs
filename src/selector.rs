@@ -625,7 +625,7 @@ impl TrySelector {
             if is_marked {
                 line.left.write("× ", &tui::palette::accent());
             } else if abs_idx == self.cursor_pos {
-                line.left.write("→ ", &tui::palette::accent());
+                line.left.write_bold("→ ", "");
             } else {
                 line.left.write("  ", "");
             }
