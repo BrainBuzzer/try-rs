@@ -1,0 +1,23 @@
+[package]
+name = "try-rs"
+version = "2.0.0"
+edition = "2021"
+description = "A CLI tool for managing ephemeral project directories with interactive fuzzy search"
+license = "MIT"
+authors = ["Tobias Lütke <tobi@shopify.com>"]
+
+[[bin]]
+name = "try"
+path = "src/main.rs"
+
+[dependencies]
+chrono = "0.4"
+crossterm = "0.28"
+rand = "0.8"
+unicode-width = "0.1"
+libc = "0.2"
+regex = "1.10"
+atty = "0.2"
+
+[dev-dependencies]
+tempfile = "3.12"
