@@ -1777,7 +1777,7 @@ mod tryselector_tests {
 
         env::set_var("TRY_PROJECTS", projects_dir.path().to_str().unwrap());
 
-        let mut selector = TrySelector::new(
+        let _selector = TrySelector::new(
             try_path.to_path_buf(),
             TestFlags {
                 test_no_cls: true,
@@ -1803,8 +1803,8 @@ mod tryselector_tests {
         fs::create_dir(&try_path).unwrap();
         fs::create_dir(try_path.join("2024-01-01-test")).unwrap();
 
-        let mut selector = TrySelector::new(
-            try_path.clone(),
+        let _selector = TrySelector::new(
+            try_path.to_path_buf(),
             TestFlags {
                 test_no_cls: true,
                 test_keys: vec![],
