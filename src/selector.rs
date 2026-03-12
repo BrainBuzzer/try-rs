@@ -689,9 +689,14 @@ impl TrySelector {
                 .left
                 .write(" |  Ctrl-D: Toggle  Enter: Confirm  Esc: Cancel", "");
         } else {
-            self.screen.footer.add_line().left.write_dim(
-                "esc:quit  enter:select  ctrl-d:delete  Ctrl-R: Rename  ctrl-g:graduate  ctrl-t:new",
-            );
+            let hints =
+                "esc:quit  enter:select  ctrl-d:delete  Ctrl-R: Rename  ctrl-g:graduate  ctrl-t:new";
+            let separator = "─".repeat(self.screen.width.saturating_sub(1) as usize);
+            self.screen
+                .footer
+                .add_line()
+                .left
+                .write_dim(&format!("{} {}", hints, separator));
         }
     }
 
