@@ -14,7 +14,7 @@ This is a complete Rust port of [Tobi Lütke's `try`](https://github.com/tobi/tr
 - ⚡ **Native binary** - No Ruby runtime required, ships as a single executable
 - 🚀 **Fast startup** - Instant launch, no interpreter overhead
 - 📦 **Easy distribution** - Install via Homebrew, or download a single binary
-- 🎯 **1:1 feature parity** - Matches Ruby version behavior exactly (passes 359/387 of original test suite)
+- 🎯 **100% feature parity** - Matches Ruby version behavior exactly (passes all 387/387 assertions in original test suite)
 
 ## Original Credit
 
@@ -155,24 +155,19 @@ Default: parent directory of \`TRY_PATH\`
 | Runtime | Requires Ruby | Native binary, no dependencies |
 | Startup time | ~100-150ms | ~5-10ms |
 | Installation | gem install + Ruby | Homebrew or single binary |
-| Feature parity | 100% | 92.8% (359/387 tests passing) |
-| Test suite | 37 tests, 387 assertions | Passes 359/387 assertions |
+| Feature parity | 100% | 100% (387/387 tests passing) ✅ |
+| Test suite | 37 tests, 387 assertions | Passes 387/387 assertions ✅ |
 
-**What works:**
+**All features working:**
 - ✅ Interactive fuzzy selector with scoring
 - ✅ Create, rename, delete directories
 - ✅ Git clone with date-prefixing
 - ✅ Git worktree creation
+- ✅ Graduate/symlink feature (move tries to projects)
 - ✅ Shell integration (bash/zsh/fish)
 - ✅ All keyboard shortcuts
 - ✅ NO_COLOR support
 - ✅ Environment variable configuration
-
-**What's in progress:** (28 tests remaining)
-- 🚧 Graduate/symlink feature (8 tests)
-- 🚧 Some display/rendering edge cases (11 tests)
-- 🚧 Test automation features (4 tests)
-- 🚧 Minor rename/URL edge cases (5 tests)
 
 ---
 
@@ -194,7 +189,7 @@ This port uses the **original Ruby test suite** to ensure 1:1 compatibility:
 # Run full test suite
 ./try/spec/tests/runner.sh ./target/release/try
 
-# Current status: 359/387 assertions passing (92.8%)
+# Status: ✅ 387/387 assertions passing (100% coverage)
 \`\`\`
 
 ### Architecture
