@@ -2,15 +2,8 @@ class TryRs < Formula
   desc "Fast, native implementation of try - fresh directories for every vibe"
   homepage "https://github.com/BrainBuzzer/try-rs"
   url "https://github.com/BrainBuzzer/try-rs/releases/download/v2.0.0/try-x86_64-apple-darwin.tar.gz"
-  sha256 "0" * 64
+  sha256 "61c616d50b716c9a948b046f060024c0eccf03d1e10bddf06e00d88fa7816de4"
   head "https://github.com/BrainBuzzer/try-rs.git", branch: "main"
-
-  # TODO: Update url and sha256 after first release (v2.0.0):
-  # 1. Create GitHub release tag v2.0.0
-  # 2. Download the x86_64-apple-darwin tarball from GitHub Actions artifacts
-  # 3. Get SHA256: sha256sum try-x86_64-apple-darwin.tar.gz
-  # 4. Update url with actual release download link
-  # 5. Update sha256 with actual hash value
 
   depends_on "rust" => :build if build.head?
 
