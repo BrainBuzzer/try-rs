@@ -630,6 +630,9 @@ impl TrySelector {
                 line.left.write("  ", "");
             }
 
+            line.left.emoji("📁");
+            line.left.write(" ", "");
+
             if let Some(prefix) = &entry.data.date_prefix {
                 if entry.data.name.starts_with(prefix) {
                     line.left.write_dim(prefix);
@@ -1163,12 +1166,13 @@ impl TrySelector {
                                 return Ok(None);
                             }
                             Char(c)
-                                if c.is_ascii_alphanumeric()
-                                    || c == '-'
-                                    || c == '_'
-                                    || c == '.'
-                                    || c == ' '
-                                    || c == '/' =>
+                                if !ctrl
+                                    && (c.is_ascii_alphanumeric()
+                                        || c == '-'
+                                        || c == '_'
+                                        || c == '.'
+                                        || c == ' '
+                                        || c == '/') =>
                             {
                                 rename_field.insert_char(c);
                                 rename_error = None;
