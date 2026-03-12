@@ -1331,13 +1331,14 @@ impl TrySelector {
                                 return Ok(None);
                             }
                             Char(c)
-                                if c.is_ascii_alphanumeric()
-                                    || c == '-'
-                                    || c == '_'
-                                    || c == '.'
-                                    || c == ' '
-                                    || c == '/'
-                                    || c == '~' =>
+                                if !ctrl
+                                    && (c.is_ascii_alphanumeric()
+                                        || c == '-'
+                                        || c == '_'
+                                        || c == '.'
+                                        || c == ' '
+                                        || c == '/'
+                                        || c == '~') =>
                             {
                                 graduate_field.insert_char(c);
                             }
@@ -1697,16 +1698,22 @@ mod tryselector_tests {
 
         selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
         assert!(selector.delete_mode);
-        assert_eq!(selector.marked_for_delete.len(), 0);
+        assert_eq!(selector.marked_for_delete.len(), 1);
 
         selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
-        assert_eq!(selector.marked_for_delete.len(), 1);
+        assert_eq!(selector.marked_for_delete.len(), 0);
+        assert!(!selector.delete_mode);
 
         selector.cursor_pos = 1;
         selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
-        assert_eq!(selector.marked_for_delete.len(), 2);
+        assert!(selector.delete_mode);
+        assert_eq!(selector.marked_for_delete.len(), 1);
 
         selector.cursor_pos = 0;
+        selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
+        assert_eq!(selector.marked_for_delete.len(), 2);
+
+        selector.cursor_pos = 1;
         selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
         assert_eq!(selector.marked_for_delete.len(), 1);
     }
@@ -1726,7 +1733,6 @@ mod tryselector_tests {
         )
         .unwrap();
 
-        selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
         selector.handle_key(KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL));
         assert!(selector.delete_mode);
         assert_eq!(selector.marked_for_delete.len(), 1);

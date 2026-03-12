@@ -294,7 +294,6 @@ fn script_delete(paths: &[String]) -> Vec<String> {
 
 #[allow(dead_code)]
 fn script_ascend(path: &Path, projects_dir: &Path) -> String {
-    let tries_dir = path.parent().unwrap_or_else(|| Path::new("."));
     let basename = path
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
@@ -312,35 +311,17 @@ fn script_ascend(path: &Path, projects_dir: &Path) -> String {
 
     let mut cmds = Vec::new();
     if is_worktree {
-        let repo_root = fs::read_to_string(&git_file)
-            .ok()
-            .and_then(|content| {
-                content
-                    .trim_start()
-                    .strip_prefix("gitdir:")
-                    .map(str::trim)
-                    .map(str::to_string)
-            })
-            .map(PathBuf::from)
-            .map(|p| if p.is_absolute() { p } else { path.join(p) })
-            .and_then(|p| {
-                p.parent()
-                    .and_then(|x| x.parent())
-                    .and_then(|x| x.parent())
-                    .map(Path::to_path_buf)
-            })
-            .unwrap_or_else(|| tries_dir.to_path_buf());
-        cmds.push(format!("cd {}", q(&repo_root.to_string_lossy())));
+        // Use git worktree move with absolute paths
         cmds.push(format!(
             "git worktree move {} {}",
             q(&path.to_string_lossy()),
             q(&dest.to_string_lossy())
         ));
     } else {
-        cmds.push(format!("cd {}", q(&tries_dir.to_string_lossy())));
+        // Use mv with absolute paths (no cd)
         cmds.push(format!(
             "mv {} {}",
-            q(&basename),
+            q(&path.to_string_lossy()),
             q(&dest.to_string_lossy())
         ));
     }
@@ -1297,7 +1278,7 @@ mod tests {
     fn script_ascend_commands() {
         assert_eq!(
             script_ascend(Path::new("/tries/src"), Path::new("/projects")),
-            "cd '/tries' && \\\n  mv 'src' '/projects/src' && \\\n+  ln -s '/projects/src' '/tries/src' && \\\n+  echo 'Graduated: src → /projects/src' && \\\n+  touch '/projects/src' && \\\n+  cd '/projects/src'"
+            "mv '/tries/src' '/projects' && \\\n  ln -s '/projects' '/tries/src' && \\\n  echo 'Graduated: src → /projects' && \\\n  touch '/projects' && \\\n  cd '/projects'"
         );
     }
 
