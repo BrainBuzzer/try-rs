@@ -41,45 +41,45 @@ Instantly navigate through all your experiment directories with:
 
 ### Homebrew (Recommended)
 
-\`\`\`bash
+```bash
 brew tap BrainBuzzer/try-rs
 brew install try-rs
-\`\`\`
+```
 
 Then add to your shell:
 
-\`\`\`bash
+```bash
 # Bash/Zsh - add to .zshrc or .bashrc
 eval "$(try init)"
 
 # Fish - add to config.fish
 try init | source
-\`\`\`
+```
 
 ### From Source
 
-\`\`\`bash
+```bash
 git clone https://github.com/BrainBuzzer/try-rs
 cd try-rs
 cargo build --release
 cp target/release/try ~/.local/bin/
-\`\`\`
+```
 
 Then add the shell integration:
 
-\`\`\`bash
+```bash
 # Bash/Zsh
 eval "$(try init ~/src/tries)"
 
 # Fish
 try init ~/src/tries | source
-\`\`\`
+```
 
 ---
 
 ## Usage
 
-\`\`\`bash
+```bash
 try                                          # Browse all experiments
 try redis                                    # Jump to redis experiment or create new
 try new api                                  # Start with "2025-03-12-new-api"
@@ -87,7 +87,7 @@ try . [name]                                 # Create dated worktree dir for cur
 try clone https://github.com/user/repo.git  # Clone repo into date-prefixed directory
 try https://github.com/user/repo.git        # Shorthand for clone (same as above)
 try --help                                   # See all options
-\`\`\`
+```
 
 ### Keyboard Shortcuts
 
@@ -102,7 +102,7 @@ try --help                                   # See all options
 ### Git Integration
 
 **Clone repositories:**
-\`\`\`bash
+```bash
 # Clone with auto-generated directory name
 try clone https://github.com/tobi/try.git
 # Creates: 2025-03-12-tobi-try
@@ -110,14 +110,14 @@ try clone https://github.com/tobi/try.git
 # Clone with custom name
 try clone https://github.com/tobi/try.git my-fork
 # Creates: my-fork
-\`\`\`
+```
 
 **Create worktrees:**
-\`\`\`bash
+```bash
 # Inside a git repo
 try .                    # Creates dated worktree from current repo
 try . feature-name       # Custom name: 2025-03-12-feature-name
-\`\`\`
+```
 
 Supported git URI formats:
 - \`https://github.com/user/repo.git\` (HTTPS GitHub)
@@ -132,17 +132,17 @@ Supported git URI formats:
 
 Set \`TRY_PATH\` to change where experiments are stored:
 
-\`\`\`bash
+```bash
 export TRY_PATH=~/code/experiments
-\`\`\`
+```
 
 Default: \`~/src/tries\`
 
 Set \`TRY_PROJECTS\` for graduation destination:
 
-\`\`\`bash
+```bash
 export TRY_PROJECTS=~/projects
-\`\`\`
+```
 
 Default: parent directory of \`TRY_PATH\`
 
@@ -175,9 +175,9 @@ Default: parent directory of \`TRY_PATH\`
 
 ### Building
 
-\`\`\`bash
+```bash
 cargo build --release
-\`\`\`
+```
 
 Binary will be at \`target/release/try\`
 
@@ -185,12 +185,12 @@ Binary will be at \`target/release/try\`
 
 This port uses the **original Ruby test suite** to ensure 1:1 compatibility:
 
-\`\`\`bash
+```bash
 # Run full test suite
 ./try/spec/tests/runner.sh ./target/release/try
 
 # Status: ✅ 387/387 assertions passing (100% coverage)
-\`\`\`
+```
 
 ### Architecture
 
