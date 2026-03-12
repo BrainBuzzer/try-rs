@@ -630,7 +630,11 @@ impl TrySelector {
                 line.left.write("  ", "");
             }
 
-            line.left.emoji("📁");
+            if entry.data.is_symlink {
+                line.left.emoji("🔗");
+            } else {
+                line.left.emoji("📁");
+            }
             line.left.write(" ", "");
 
             if let Some(prefix) = &entry.data.date_prefix {
@@ -1315,6 +1319,9 @@ impl TrySelector {
                                 return Ok(Some(PathBuf::from(dest)));
                             }
                             Esc | Char('c') if ctrl => {
+                                return Ok(None);
+                            }
+                            Char('d') if ctrl => {
                                 return Ok(None);
                             }
                             Char(c)

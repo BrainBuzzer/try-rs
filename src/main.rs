@@ -299,8 +299,8 @@ fn script_ascend(path: &Path, projects_dir: &Path) -> String {
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
         .unwrap_or_else(|| "".to_string());
-    let dest = projects_dir.join(&basename);
-    let symlink_path = tries_dir.join(&basename);
+    let dest = projects_dir.to_path_buf();
+    let symlink_path = path.to_path_buf();
 
     let git_file = path.join(".git");
     let is_worktree = fs::metadata(&git_file)
