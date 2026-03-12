@@ -761,6 +761,9 @@ fn run_selector(options: CliOptions) {
             emit_script(&cmds);
         }
         selector::SelectionResult::Cancelled => {
+            if !options.and_keys.is_empty() {
+                println!("Cancelled.");
+            }
             std::process::exit(1);
         }
     }
