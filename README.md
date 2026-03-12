@@ -42,7 +42,10 @@ Instantly navigate through all your experiment directories with:
 ### Homebrew (Recommended)
 
 ```bash
+# Add the tap (this repository)
 brew tap BrainBuzzer/try-rs
+
+# Install try-rs (builds from source)
 brew install try-rs
 ```
 
