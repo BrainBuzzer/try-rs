@@ -690,7 +690,7 @@ impl TrySelector {
                 .write(" |  Ctrl-D: Toggle  Enter: Confirm  Esc: Cancel", "");
         } else {
             self.screen.footer.add_line().left.write_dim(
-                "esc:quit  enter:select  ctrl-d:delete  ctrl-r:rename  ctrl-g:graduate  ctrl-t:new",
+                "esc:quit  enter:select  ctrl-d:delete  Ctrl-R: Rename  ctrl-g:graduate  ctrl-t:new",
             );
         }
     }
