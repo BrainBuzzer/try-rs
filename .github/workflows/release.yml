@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: ${{ matrix.target }}
+      
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }}
+      
+      - name: Create archive and checksum
+        run: |
+          cd target/${{ matrix.target }}/release
+          
+          # Create tarball
+          tar czf try-${{ matrix.target }}.tar.gz try
+          
+          # Generate SHA256 checksum
+          shasum -a 256 try-${{ matrix.target }}.tar.gz > try-${{ matrix.target }}.tar.gz.sha256
+          
+          # Display checksums for verification
+          cat try-${{ matrix.target }}.tar.gz.sha256
+      
+      - name: Upload artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            target/${{ matrix.target }}/release/try-${{ matrix.target }}.tar.gz
+            target/${{ matrix.target }}/release/try-${{ matrix.target }}.tar.gz.sha256
